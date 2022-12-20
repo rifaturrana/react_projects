@@ -37,6 +37,14 @@
   }
 }
 
-li {
-  list-style: none;
+.list {
+  border: 1px solid black;
+}
+.student-section {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.student-form {
+  text-align: center;
 }
