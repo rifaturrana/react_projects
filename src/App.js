@@ -87,7 +87,7 @@ function App() {
   }, []);
   return (
     <div className="App">
-      <form onSubmit={editMode ? updateHandler : createHandler}>
+      <form onSubmit={(e) => (editMode ? updateHandler(e) : createHandler(e))}>
         <input
           type="text"
           value={noteTitle}
