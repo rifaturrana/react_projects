@@ -2,52 +2,121 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-  const [todos, setTodos] = useState([]); // [{}, {}]
-  const [counter, setCounter] = useState(0); // counter = 1 // counter = 2
-  const [counter2, setCounter2] = useState(10);
-  // let counter = 0;
+  const [notes, setNotes] = useState([]);
+  const [noteTitle, setNoteTitle] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editableNote, setEditableNote] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const getAllNotes = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/notes");
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Error fetching notes");
+      }
+      setNotes(data);
+      setIsLoading(false);
+      setNoteTitle("");
+    } catch (e) {
+      setIsLoading(false);
+      setErrorMessage(e.message);
+    }
+  };
 
-  // const upDateCounter = () => {
-  //   ++counter;
-  //   console.log(counter);
-  // }
+  const createHandler = (e) => {
+    e.preventDefault();
+    if (!noteTitle) {
+      return alert("Please enter a title");
+    }
+    const newNote = {
+      id: Date.now() + "",
+      title: noteTitle,
+    };
+    fetch(`http://localhost:8080/notes`, {
+      method: "POST",
+      body: JSON.stringify(newNote),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      getAllNotes();
+    });
+  };
+  const removeHandler = (id) => {
+    fetch(`http://localhost:8080/notes/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      getAllNotes();
+    });
+  };
+  const editHandler = (id) => {
+    const toBeEditedNote = notes.find((note) => note.id === id);
 
-  // fetch(`https://jsonplaceholder.typicode.com/todos/`)
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     console.log(data, 'data');
-  //     setTodos(data)
-  //   })
+    setEditMode(true);
+    setEditableNote(toBeEditedNote);
+    setNoteTitle(toBeEditedNote.title);
+  };
+
+  const updateHandler = (e) => {
+    e.preventDefault();
+    if (!noteTitle) {
+      return alert("Please enter a title");
+    }
+    const updatedNote = {
+      id: editableNote.id,
+      title: noteTitle,
+    };
+
+    fetch(`http://localhost:8080/notes/${editableNote.id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedNote),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then(() => {
+      getAllNotes();
+      setEditMode(false);
+      setEditableNote(null);
+      setNoteTitle("");
+    });
+  };
 
   useEffect(() => {
-    console.log("hello useEffect");
-    fetch(`https://jsonplaceholder.typicode.com/todos/`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data, "data");
-        setTodos(data);
-      });
+    getAllNotes();
   }, []);
-
-  console.log(`I am outside return`);
-
   return (
     <div className="App">
-      <h2>All Todos</h2>
+      <form onSubmit={editMode ? updateHandler : createHandler}>
+        <input
+          type="text"
+          value={noteTitle}
+          onChange={(e) => setNoteTitle(e.target.value)}
+        />
+        <button type="submit">
+          {editMode ? "Update Note" : "Create note"}
+        </button>
+      </form>
       <ul>
-        {todos?.map((item) => (
-          <li key={item.id}>{item.title}</li>
+        {notes.map((note) => (
+          <li key={note.id}>
+            <span> {note.title} </span>
+
+            <button onClick={() => editHandler(note.id)}>Edit</button>
+            <button onClick={() => removeHandler(note.id)}>Delete</button>
+          </li>
         ))}
       </ul>
-      <h2>The value of the counter is {counter}</h2>
-      <button onClick={() => setCounter(counter + 1)}>Increase Counter</button>
-      <hr />
-
-      <h2>The value of the counter is {counter2}</h2>
-      <button onClick={() => setCounter2(counter2 + 1)}>
-        Increase Counter
-      </button>
-      {/* <button onClick={upDateCounter}>Increase Counter</button> */}
+      {isLoading && (
+        <div>
+          <h1>Loading...........</h1>
+        </div>
+      )}
+      {errorMessage && (
+        <div>
+          <h1>{errorMessage}</h1>
+        </div>
+      )}
     </div>
   );
 }
