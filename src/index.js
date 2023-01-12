@@ -3,13 +3,19 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import StudentProvider from "./contexts/Student";
+import BoardProvider from "./contexts/Boards";
+import ListProvider from "./contexts/Lists";
+import TaskProvider from "./contexts/Tasks";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <StudentProvider>
-      <App />
-    </StudentProvider>
+    <BoardProvider>
+      <ListProvider>
+        <TaskProvider>
+          <App />
+        </TaskProvider>
+      </ListProvider>
+    </BoardProvider>
   </React.StrictMode>
 );
 
