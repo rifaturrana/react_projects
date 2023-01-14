@@ -1,12 +1,11 @@
 import "./App.css";
-import Form from "./components/Form";
-import StudentSection from "./components/StudentSection";
+
+import Router from "./router/Router";
 
 const App = () => {
   return (
     <div>
-      <Form />
-      <StudentSection />
+      <Router />
     </div>
   );
 };

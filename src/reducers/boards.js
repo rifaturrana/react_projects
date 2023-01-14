@@ -2,8 +2,8 @@ export const boardReducers = (boards, action) => {
   switch (action.type) {
     case "CREATE_NEW_BOARD": {
       const board = {
-        id: action.payload.id,
-        title: action.payload.title,
+        id: Date.now() + " ",
+        title: action.payload,
         lists: [],
         tasks: [],
       };
