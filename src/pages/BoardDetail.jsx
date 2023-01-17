@@ -6,6 +6,7 @@ import { TaskContext } from "../contexts/Tasks";
 import AddItem from "../components/AddItem";
 import AddItemForm from "../components/AddItemForm";
 import { listsReducer } from "../reducers/lists";
+import TaskList from "../components/TaskList";
 
 const BoardDetail = () => {
   const [editMode, setEditMode] = useState(false);
@@ -42,7 +43,7 @@ const BoardDetail = () => {
       {lists
         .filter((item) => item.boardId === boardId)
         .map((lists) => (
-          <li key={lists.id}>{lists.title}</li>
+          <TaskList taskList={lists} key={lists.id} />
         ))}
       {!editMode ? (
         <AddItem listAddItem={true} setEditMode={setEditMode} />
