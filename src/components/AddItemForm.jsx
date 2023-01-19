@@ -1,7 +1,5 @@
 import { icons } from "../assets";
 
-import React from "react";
-
 const AddItemForm = ({
   listForm,
   submitHandler,
@@ -12,11 +10,10 @@ const AddItemForm = ({
   const createHandler = (e) => {
     e.stopPropagation();
     if (!title) {
-      alert("Please provide a title");
+      return alert(`Please Provide a valid title`);
     }
     submitHandler(e);
   };
-
   return (
     <div className="form-container">
       <div className="form-card">
@@ -33,16 +30,16 @@ const AddItemForm = ({
         </form>
       </div>
       <div className="button-container">
-        <button onClick={(e) => createHandler(e)} className="add-button">
-          {listForm ? "Add List" : "Add task"}
+        <button onClick={createHandler} className="add-button">
+          {listForm ? "Add List" : "Add Task"}
         </button>
         <img
           onClick={(e) => {
             e.stopPropagation();
             setEditMode(false);
           }}
-          src={icons.crossIcon}
           className="form-icon"
+          src={icons.crossIcon}
           alt=""
         />
       </div>

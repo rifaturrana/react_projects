@@ -1,70 +1,74 @@
 import { useState, useContext } from "react";
+import { Draggable } from "react-beautiful-dnd";
 
 import AddItemForm from "./AddItemForm";
-import { icons } from "../assets";
-import { BoardContext } from "../contexts/Boards";
-import { ListContext } from "../contexts/Lists";
-import { TaskContext } from "../contexts/Tasks";
 
-const TaskCard = ({ task }) => {
-  const { tasks, dispatchTaskAction } = useContext(TaskContext);
+import { TaskContext } from "../contexts/Task";
+import { ListContext } from "../contexts/List";
+import { BoardContext } from "../contexts/Board";
+import { icons } from "../assets";
+
+const TaskCard = ({ task, index }) => {
+  const [taskTitle, setTaskTitle] = useState(task.title);
+  const [editMode, setEditMode] = useState(false);
+  const { dispatchTaskAction } = useContext(TaskContext);
   const { dispatchListAction } = useContext(ListContext);
   const { dispatchBoardAction } = useContext(BoardContext);
-  const [editMode, setEditMode] = useState(false);
-  const [taskTitle, setTaskTitle] = useState(task.title);
+
   const submitHandler = (e) => {
     e.preventDefault();
     dispatchTaskAction({
-      type: "EDIT_TASK",
-      payload: {
-        id: task.id,
-        title: taskTitle,
-      },
+      type: "UPDATE_TASK",
+      payload: { id: task.id, title: taskTitle },
     });
     setEditMode(false);
   };
+
   const removeHandler = () => {
-    dispatchTaskAction({
-      type: "REMOVE_TASK",
-      payload: task.id,
-    });
+    dispatchTaskAction({ type: "REMOVE_TASK", payload: task.id });
     dispatchListAction({
-      type: "REMOVE_TASK_FROM_LIST",
-      payload: {
-        taskId: task.id,
-        id: task.listId,
-      },
+      type: "REMOVE_TASK_ID_FROM_A_LIST",
+      payload: { id: task.listId, taskId: task.id },
     });
     dispatchBoardAction({
-      type: "REMOVE_TASK_FROM_BOARD",
-      payload: {
-        taskId: task.id,
-        id: task.boardId,
-      },
+      type: "REMOVE_TASK_ID_FROM_A_BOARD",
+      payload: { id: task.boardId, taskId: task.id },
     });
   };
+
   return (
-    <div>
-      {!editMode ? (
-        <div onClick={() => setEditMode(true)}>
-          <div className="task-card">
-            <p>{task.title}</p>
-            <img
-              onClick={removeHandler}
-              className="add=item-icon"
-              src={icons.crossIcon}
-              alt=""
-            />
+    <Draggable draggableId={task.id} index={index}>
+      {(provided) => {
+        // console.log(provided);
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            {!editMode ? (
+              <div onClick={() => setEditMode(true)} className="task-card">
+                <p>{task.title}</p>
+                <img
+                  onClick={removeHandler}
+                  src={icons.crossIcon}
+                  alt=""
+                  className="add-item-icon"
+                />
+              </div>
+            ) : (
+              <AddItemForm
+                title={taskTitle}
+                onChangeHandler={(e) => setTaskTitle(e.target.value)}
+                setEditMode={setEditMode}
+                submitHandler={submitHandler}
+              />
+            )}
           </div>
-        </div>
-      ) : (
-        <AddItemForm
-          submitHandler={submitHandler}
-          title={taskTitle}
-          onChangeHandler={(e) => setTaskTitle(e.target.value)}
-        />
-      )}
-    </div>
+        );
+      }}
+    </Draggable>
   );
 };
+
 export default TaskCard;

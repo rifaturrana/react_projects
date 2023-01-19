@@ -1,11 +1,10 @@
 import { createContext, useReducer } from "react";
-import { listsReducer } from "../reducers/lists";
+import { listReducer } from "../reducers/list";
 
 export const ListContext = createContext();
 
 const ListProvider = ({ children }) => {
-  const [lists, dispatchListAction] = useReducer(listsReducer, []);
-
+  const [lists, dispatchListAction] = useReducer(listReducer, []);
   return (
     <ListContext.Provider value={{ lists, dispatchListAction }}>
       {children}

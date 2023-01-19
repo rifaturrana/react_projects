@@ -1,7 +1,5 @@
 import { icons } from "../assets";
 
-import React from "react";
-
 const AddItem = ({ listAddItem, setEditMode }) => {
   return (
     <div
@@ -19,3 +17,7 @@ const AddItem = ({ listAddItem, setEditMode }) => {
 };
 
 export default AddItem;
+
+// function add (a, b) {
+//     return a + b
+// }
