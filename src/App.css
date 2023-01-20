@@ -215,3 +215,19 @@ a {
   padding: 5px;
   margin: 5px 0;
 }
+.icons {
+  font-size: 25px;
+  cursor: pointer;
+}
+.board {
+  display: flex;
+  flex-direction: column;
+  background-color: aqua;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  margin-top: 5px;
+}
+h3 {
+  text-align: center;
+}

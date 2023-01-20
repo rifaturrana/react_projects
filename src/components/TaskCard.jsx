@@ -83,6 +83,7 @@ const TaskCard = ({ task, index }) => {
       ) {
         alert("Task Already exist");
       }
+      alert("Task Already exist");
     } else if (
       task.listId !== selectedListId &&
       task.boardId === selectedBoardId
@@ -111,10 +112,11 @@ const TaskCard = ({ task, index }) => {
           },
         });
       }
-    } else if (
-      task.boardId !== selectedBoardId &&
-      task.listId !== selectedListId
-    ) {
+    } else if (task.boardId !== selectedBoardId) {
+      dispatchBoardAction({
+        type: "REMOVE_TASK_ID_FROM_A_BOARD",
+        payload: { id: task.boardId, taskId: task.id },
+      });
       dispatchBoardAction({
         type: "ADD_TASK_ID_TO_A_BOARD",
         payload: {
@@ -162,115 +164,109 @@ const TaskCard = ({ task, index }) => {
           >
             {!editMode ? (
               <div>
-                <div onClick={() => setEditMode(true)} className="task-card">
+                <div className="task-card">
                   <p>{task.title}</p>
                   <BsThreeDots
+                    className="icons"
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowMenu(!showMenu);
                       setShowBoard(!showBoard);
                     }}
                   />
-                  <img
-                    onClick={removeHandler}
-                    src={icons.crossIcon}
-                    alt=""
-                    className="add-item-icon"
-                  />
                 </div>
+                <div>
+                  {showMenu && (
+                    <>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <BiEdit
+                          className="icons"
+                          onClick={() => setEditMode(true)}
+                        >
+                          Edit
+                        </BiEdit>
+                        <MdDriveFileMove
+                          className="icons"
+                          onClick={() =>
+                            setShowBoard({ show: true, label: "Move Task" })
+                          }
+                        >
+                          Move
+                        </MdDriveFileMove>
+                        <BiCopy
+                          className="icons"
+                          onClick={() =>
+                            setShowBoard({ show: true, label: "Copy Task" })
+                          }
+                        >
+                          Copy
+                        </BiCopy>
+                        <MdDelete className="icons" onClick={removeHandler}>
+                          Delete
+                        </MdDelete>
+                      </div>
+                      <div>
+                        {showBoard.show && (
+                          <div className="board">
+                            <h3>{showBoard.label}</h3>
 
-                {showMenu && (
-                  <>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      <BiEdit>Edit</BiEdit>
-                      <MdDriveFileMove
-                        onClick={() =>
-                          setShowBoard({ show: true, label: "Move Task" })
-                        }
-                      >
-                        Move
-                      </MdDriveFileMove>
-                      <BiCopy
-                        onClick={() =>
-                          setShowBoard({ show: true, label: "Copy Task" })
-                        }
-                      >
-                        Copy
-                      </BiCopy>
-                      <MdDelete>Delete</MdDelete>
-                    </div>
-                    <div>
-                      {showBoard.show && (
-                        <div>
-                          <h3>{showBoard.label}</h3>
-                          <form
-                            onSubmit={(e) =>
-                              showBoard.label === "Move Task"
-                                ? moveHandler(e)
-                                : copyHandler(e)
-                            }
-                          >
-                            <select
-                              name=""
-                              id=""
-                              onChange={(e) =>
-                                setSelectedBoardId(e.target.value)
+                            <form
+                              onSubmit={(e) =>
+                                showBoard.label === "Move Task"
+                                  ? moveHandler(e)
+                                  : copyHandler(e)
                               }
                             >
-                              <option value="">Select Board</option>
-                              {boards.map((board) => (
-                                <option key={board.id} value={board.id}>
-                                  {board.title}
-                                </option>
-                              ))}
-                            </select>
-                            <select
-                              name=""
-                              id=""
-                              onChange={(e) =>
-                                setSelectedListId(e.target.value)
-                              }
-                            >
-                              <option value="">Select List</option>
-                              {lists
-                                .filter(
-                                  (list) => list.boardId === selectedBoardId
-                                )
-                                .map((list) => (
-                                  <option key={list.id} value={list.id}>
-                                    {list.title}
+                              <select
+                                name=""
+                                id=""
+                                onChange={(e) =>
+                                  setSelectedBoardId(e.target.value)
+                                }
+                              >
+                                <option value="">Select Board</option>
+                                {boards.map((board) => (
+                                  <option key={board.id} value={board.id}>
+                                    {board.title}
                                   </option>
                                 ))}
-                              {/* {lists.map((list) => (
-                                <option key={list.id} value={list.id}>
-                                  {list.title}
-                                </option>
-                              ))} */}
-                            </select>
-                            <button type="submit">
-                              {showBoard.label === "Move Task"
-                                ? "Move Task"
-                                : "Copy Task"}
-                            </button>
-                            {/* {showBoard.label === "Move Task" ? (
-                              <button>Move task</button>
-                            ) : (
-                              <button type="submit" onClick={copyHandler}>
-                                Copy task
+                              </select>
+                              <select
+                                name=""
+                                id=""
+                                onChange={(e) =>
+                                  setSelectedListId(e.target.value)
+                                }
+                              >
+                                <option value="">Select List</option>
+                                {lists
+                                  .filter(
+                                    (list) => list.boardId === selectedBoardId
+                                  )
+                                  .map((list) => (
+                                    <option key={list.id} value={list.id}>
+                                      {list.title}
+                                    </option>
+                                  ))}
+                              </select>
+                              <button type="submit">
+                                {showBoard.label === "Move Task"
+                                  ? "Move Task"
+                                  : "Copy Task"}
                               </button>
-                            )} */}
-                          </form>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
+                            </form>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             ) : (
               <AddItemForm

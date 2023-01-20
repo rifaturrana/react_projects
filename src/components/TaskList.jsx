@@ -3,9 +3,9 @@ import { Droppable } from "react-beautiful-dnd";
 
 import AddItem from "./AddItem";
 import AddItemForm from "./AddItemForm";
-import { icons } from "../assets";
+
 import { BsThreeDots } from "react-icons/bs";
-import { BiCopy, BiEdit } from "react-icons/bi";
+import { BiEdit } from "react-icons/bi";
 import { MdDelete, MdDriveFileMove } from "react-icons/md";
 import { BoardContext } from "../contexts/Board";
 import { ListContext } from "../contexts/List";
@@ -14,13 +14,15 @@ import TaskCard from "./TaskCard";
 
 const TaskList = ({ taskList, index }) => {
   const [taskTitle, setTaskTitle] = useState("");
+  const [listTitle, setListTitle] = useState(taskList.title);
   const [editMode, setEditMode] = useState(false);
+  const [editList, setEditList] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [showBoard, setShowBoard] = useState({ show: false, label: undefined });
+  const [showBoard, setShowBoard] = useState(false);
   const [selectedBoardId, setSelectedBoardId] = useState("");
-  const [selectedListId, setSelectedListId] = useState("");
+
   const { tasks: allTasks, dispatchTaskAction } = useContext(TaskContext);
-  const { lists, dispatchListAction } = useContext(ListContext);
+  const { dispatchListAction } = useContext(ListContext);
   const { boards, dispatchBoardAction } = useContext(BoardContext);
 
   const submitHandler = (e) => {
@@ -49,6 +51,17 @@ const TaskList = ({ taskList, index }) => {
     setEditMode(false);
     setTaskTitle("");
   };
+
+  const editListHandler = (e) => {
+    e.preventDefault();
+    dispatchListAction({
+      type: "UPDATE_LIST",
+      payload: { id: taskList.id, title: listTitle },
+    });
+
+    setEditList(false);
+  };
+
   console.log(showMenu);
 
   const removeListHandler = () => {
@@ -58,20 +71,20 @@ const TaskList = ({ taskList, index }) => {
       payload: { id: taskList.boardId, listId: taskList.id },
     });
   };
-  const copyHandler = (e) => {};
   const moveHandler = (e) => {
     e.preventDefault();
+    let taskIds = taskList.tasks.map((item) => item);
     if (!selectedBoardId) {
       return alert("Please select a board and a list to move the list");
     }
     if (selectedBoardId === taskList.boardId) {
       return alert("You can't move the list to the same board and list");
-    }
-    if (taskList.boardId !== selectedBoardId) {
+    } else if (taskList.boardId !== selectedBoardId) {
       dispatchBoardAction({
-        type: "REMOVE_LIST_ID_FROM_A_BOARD",
+        type: "REMOVE_LIST_ID_FROM_BOARD",
         payload: { id: taskList.boardId, listId: taskList.id },
       });
+
       dispatchBoardAction({
         type: "ADD_LIST_ID_TO_A_BOARD",
         payload: { id: selectedBoardId, listId: taskList.id },
@@ -81,26 +94,25 @@ const TaskList = ({ taskList, index }) => {
         type: "CHANGE_BOARD_ID_OF_A_LIST",
         payload: { id: taskList.id, boardId: selectedBoardId },
       });
-      dispatchBoardAction({
-        type: "REMOVE_TASK_ID_FROM_A_BOARD",
-        payload: {
-          id: taskList.boardId,
-          taskId: taskList.map((task) => task.tasks),
-        },
-      });
-      dispatchBoardAction({
-        type: "ADD_TASK_ID_TO_A_BOARD",
-        payload: {
-          id: selectedBoardId,
-          taskId: taskList.map((task) => task.tasks),
-        },
-      });
-      dispatchTaskAction({
-        type: "CHANGE_BOARD_ID_OF_A_TASK",
-        payload: {
-          boardId: selectedBoardId,
-          id: taskList.map((task) => task.tasks),
-        },
+      taskIds.map((item) => {
+        dispatchBoardAction({
+          type: "REMOVE_TASK_ID_FROM_A_BOARD",
+          payload: {
+            id: taskList.boardId,
+            taskId: item,
+          },
+        });
+        dispatchBoardAction({
+          type: "ADD_TASK_ID_TO_A_BOARD",
+          payload: {
+            id: selectedBoardId,
+            taskId: item,
+          },
+        });
+        dispatchTaskAction({
+          type: "CHANGE_BOARD_ID_OF_A_TASK",
+          payload: { id: item, boardId: selectedBoardId },
+        });
       });
     }
   };
@@ -108,17 +120,16 @@ const TaskList = ({ taskList, index }) => {
     <Droppable droppableId={taskList.id} index={index}>
       {(provided) => (
         <div ref={provided.innerRef} {...provided.droppableProps}>
-          <div className="list-container">
-            <div className="list-title-container">
-              <h5>{taskList.title}</h5>
-              <BsThreeDots onClick={() => setShowMenu(!showMenu)} />
+          {!editList ? (
+            <div className="list-container">
+              <div className="list-title-container">
+                <h5>{taskList.title}</h5>
+                <BsThreeDots
+                  className="icons"
+                  onClick={() => setShowMenu(!showMenu)}
+                />
+              </div>
 
-              <img
-                onClick={removeListHandler}
-                src={icons.crossIcon}
-                alt=""
-                className="add-item-icon"
-              />
               {showMenu && (
                 <>
                   <div
@@ -128,34 +139,26 @@ const TaskList = ({ taskList, index }) => {
                       justifyContent: "space-around",
                     }}
                   >
-                    <BiEdit>Edit</BiEdit>
+                    <BiEdit className="icons" onClick={() => setEditList(true)}>
+                      Edit
+                    </BiEdit>
                     <MdDriveFileMove
-                      onClick={() =>
-                        setShowBoard({ show: true, label: "Move List" })
-                      }
+                      className="icons"
+                      onClick={() => setShowBoard(!showBoard)}
                     >
                       Move
                     </MdDriveFileMove>
-                    <BiCopy
-                      onClick={() =>
-                        setShowBoard({ show: true, label: "Copy List" })
-                      }
-                    >
-                      Copy
-                    </BiCopy>
-                    <MdDelete>Delete</MdDelete>
+
+                    <MdDelete className="icons" onClick={removeListHandler}>
+                      Delete
+                    </MdDelete>
                   </div>
                   <div>
-                    {showBoard.show && (
-                      <div>
-                        <h3>{showBoard.label}</h3>
-                        <form
-                          onSubmit={(e) =>
-                            showBoard.label === "Move List"
-                              ? moveHandler(e)
-                              : copyHandler(e)
-                          }
-                        >
+                    {showBoard && (
+                      <div className="board">
+                        <h3>Move List</h3>
+
+                        <form onSubmit={(e) => moveHandler(e)}>
                           <select
                             name=""
                             id=""
@@ -169,40 +172,43 @@ const TaskList = ({ taskList, index }) => {
                             ))}
                           </select>
 
-                          <button type="submit">
-                            {showBoard.label === "Move List"
-                              ? "Move List"
-                              : "Copy List"}
-                          </button>
+                          <button type="submit">Move List</button>
                         </form>
                       </div>
                     )}
                   </div>
                 </>
               )}
+
+              {taskList.tasks
+                .map((item) => {
+                  return allTasks.find((i) => i.id === item);
+                })
+                .map((task, index) => (
+                  <TaskCard index={index} task={task} key={task.id} />
+                ))}
+              {provided.placeholder}
+
+              {!editMode ? (
+                <AddItem setEditMode={setEditMode} />
+              ) : (
+                <AddItemForm
+                  title={taskTitle}
+                  onChangeHandler={(e) => setTaskTitle(e.target.value)}
+                  setEditMode={setEditMode}
+                  editMode={editMode}
+                  submitHandler={submitHandler}
+                />
+              )}
             </div>
-
-            {taskList.tasks
-              .map((item) => {
-                return allTasks.find((i) => i.id === item);
-              })
-              .map((task, index) => (
-                <TaskCard index={index} task={task} key={task.id} />
-              ))}
-            {provided.placeholder}
-
-            {!editMode ? (
-              <AddItem setEditMode={setEditMode} />
-            ) : (
-              <AddItemForm
-                title={taskTitle}
-                onChangeHandler={(e) => setTaskTitle(e.target.value)}
-                setEditMode={setEditMode}
-                editMode={editMode}
-                submitHandler={submitHandler}
-              />
-            )}
-          </div>
+          ) : (
+            <AddItemForm
+              title={listTitle}
+              onChangeHandler={(e) => setListTitle(e.target.value)}
+              setEditMode={setEditList}
+              submitHandler={editListHandler}
+            />
+          )}
         </div>
       )}
     </Droppable>

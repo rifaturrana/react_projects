@@ -54,12 +54,13 @@ export const boardReducer = (boards, action) => {
       });
     }
 
-    case "REMOVE_LIST_ID_FROM_A_BOARD": {
+    case "REMOVE_LIST_ID_FROM_BOARD": {
       return boards.map((item) => {
         if (item.id === action.payload.id) {
-          item.lists = item.lists.filter(
-            (list) => list !== action.payload.listId
+          const newListIds = item.lists.filter(
+            (listId) => listId !== action.payload.listId
           );
+          item.lists = newListIds;
         }
 
         return item;
@@ -69,10 +70,14 @@ export const boardReducer = (boards, action) => {
     case "REMOVE_TASK_ID_FROM_A_BOARD": {
       return boards.map((item) => {
         if (item.id === action.payload.id) {
-          item.tasks = item.tasks.filter(
-            (task) => task !== action.payload.taskId
+          const newTaskIds = item.tasks.filter(
+            (listId) => listId !== action.payload.taskId
           );
+          item.tasks = newTaskIds;
+          console.log(item.tasks, "Removed");
         }
+
+        return item;
       });
     }
 

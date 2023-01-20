@@ -6,6 +6,7 @@ import BoardItem from "./BoardItem";
 
 const BoardList = () => {
   const { boards } = useContext(BoardContext);
+  console.log(boards);
   return (
     <div className="flex-wrap m-top-md d-flex justify-content-around">
       {boards.map((board) => (
