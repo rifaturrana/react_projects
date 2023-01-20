@@ -6,6 +6,13 @@ export const boardReducer = (boards, action) => {
         title: action.payload,
         lists: [],
         tasks: [],
+        createdAt:
+          new Date().getUTCDate() +
+          "/" +
+          new Date().getUTCMonth() +
+          1 +
+          "/" +
+          new Date().getUTCFullYear(),
       };
 
       return [...boards, board];

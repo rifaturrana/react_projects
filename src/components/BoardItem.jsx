@@ -36,8 +36,12 @@ const BoardItem = ({ board }) => {
           className="add-item-icon"
           alt=""
           src={icons.crossIcon}
+          width="20px"
+          height="20px"
         />
       </div>
+      <span>This board has {board.lists.length} List</span>
+      <span>This board was created at {board.createdAt}</span>
     </div>
   );
 };

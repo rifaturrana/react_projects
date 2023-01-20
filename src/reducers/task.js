@@ -30,7 +30,6 @@ export const taskReducer = (tasks, action) => {
         if (item.id === action.payload.id) {
           item.listId = action.payload.listId;
         }
-
         return item;
       });
     }
