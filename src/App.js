@@ -1,14 +1,10 @@
 import "./App.css";
-import Counter from "./components/Counter";
-import Theme from "./components/Theme";
+import Router from "./router/Router";
 
 const App = () => {
   return (
-    <div>
-      <Counter />
-      <br />
-      <hr />
-      <Theme />
+    <div className="App">
+      <Router />
     </div>
   );
 };

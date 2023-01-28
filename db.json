@@ -1,0 +1,70 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Caramel Cake",
+      "price": "12",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 2,
+      "title": "Carrot Cake",
+      "price": "10",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 3,
+      "title": "Ginger Cake",
+      "price": "12",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 4,
+      "title": "Lemon Cake",
+      "price": "11",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 5,
+      "title": "Hot chocolate",
+      "price": "4",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 6,
+      "title": "Vanilla Cake",
+      "price": "9",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 7,
+      "title": "Strawberry Cake",
+      "price": "10",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 8,
+      "title": "Muffin",
+      "price": "5",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 9,
+      "title": "Cheescake",
+      "price": "9",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 10,
+      "title": "Wedding Cake",
+      "price": "100",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    },
+    {
+      "id": 11,
+      "title": "Cake",
+      "price": "100",
+      "image": "https://www.91-img.com/gallery_images_uploads/d/7/d7cf5e2b1a3a3dfcca8a8dbb524fb11a8fb1c8e8.JPG?tr=h-550,w-0,c-at_max"
+    }
+  ]
+}
