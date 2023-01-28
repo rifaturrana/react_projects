@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { icons } from "../assets";
-import { modifyQuantityOfAnItem, removeFromCart } from "../store/action";
+import { modifyQuantityOfAnItem, removeFromCart } from "../store/reducers/Cart";
 
 function CartItem({ item }) {
   const [quantity, setQuantity] = useState(item.quantity);
