@@ -1,20 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import logger from "redux-logger";
-
-import { cartReducer } from "./reducers/Cart";
-
-const rootReducer = {
-  cart: cartReducer,
-};
-
-const myLogger = (store) => (next) => (action) => {
-  console.log(`Prev State: ${JSON.stringify(store.getState())}`);
-  console.log(`ACTION: ${JSON.stringify(action)}`);
-  next(action);
-};
+import { noteApi } from "./api/notes";
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    [noteApi.reducerPath]: noteApi.reducer,
+  },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat([myLogger, logger]),
+    getDefaultMiddleware().concat(noteApi.middleware),
 });
