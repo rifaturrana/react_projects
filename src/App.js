@@ -26,10 +26,14 @@ const App = () => {
 
   const updateHandler = (e) => {
     e.preventDefault();
-    updateNoteMutation(editableNote.id, {
+    if (!noteTitle) {
+      return alert("Please enter a title");
+    }
+    const updatedNote = {
       id: editableNote.id,
       title: noteTitle,
-    });
+    };
+    updateNoteMutation(editableNote.id, updatedNote);
     setNoteTitle("");
     setEditMode(false);
     setEditableNote(null);
