@@ -22,17 +22,18 @@ function App() {
       client.invalidateQueries(["notes"]);
     },
   });
-  const CreateHandler = () => {
+  const createMutation = useMutation(createNote, {
+    onSuccess: () => {
+      client.invalidateQueries(["notes"]);
+    },
+  });
+
+  const createHandler = (e) => {
+    e.preventDefault();
     const newNote = {
       id: Date.now() + "",
       title: noteTitle,
     };
-
-    const createMutation = useMutation(createNote, {
-      onSuccess: () => {
-        client.invalidateQueries(["notes"]);
-      },
-    });
     createMutation.mutate(newNote);
   };
   return (
@@ -45,7 +46,7 @@ function App() {
             value={noteTitle}
             onChange={(e) => setNoteTitle(e.target.value)}
           />
-          <button onClick={CreateHandler}>Add Note</button>
+          <button onClick={createHandler}>Add Note</button>
         </form>
         <ul>
           {notes?.map((item) => (
