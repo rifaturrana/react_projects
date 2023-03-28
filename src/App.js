@@ -1,79 +1,68 @@
 import "./App.css";
-import {
-  useGetNotesQuery,
-  useRemoveNoteMutation,
-  useCreateNoteMutation,
-  useUpdateNoteMutation,
-} from "./store/api/notes";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-const App = () => {
-  const [editMode, setEditMode] = useState(false);
-  const { data, isLoading, isError, error } = useGetNotesQuery();
-  const [removeNoteMutation] = useRemoveNoteMutation();
-  const [updateNoteMutation] = useUpdateNoteMutation();
-  const [createNoteMutation] = useCreateNoteMutation();
-  const [noteTitle, setNoteTitle] = useState("");
-  const [editableNote, setEditableNote] = useState(null);
+import { getAllNotes, removeNote, createNote } from "./services/note";
 
-  const createHandler = (e) => {
-    e.preventDefault();
-    createNoteMutation({
+function App() {
+  const [noteTitle, setNoteTitle] = useState("");
+  const {
+    data: notes,
+    isLoading,
+    fetchStatus,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["notes"],
+    queryFn: getAllNotes,
+  });
+  const client = useQueryClient();
+
+  const removeMutation = useMutation(removeNote, {
+    onSuccess: () => {
+      client.invalidateQueries(["notes"]);
+    },
+  });
+  const CreateHandler = () => {
+    const newNote = {
       id: Date.now() + "",
       title: noteTitle,
-    });
-    setNoteTitle("");
-  };
-
-  const updateHandler = (e) => {
-    e.preventDefault();
-    if (!noteTitle) {
-      return alert("Please enter a title");
-    }
-    const updatedNote = {
-      id: editableNote.id,
-      title: noteTitle,
     };
-    updateNoteMutation(editableNote.id, updatedNote);
-    setNoteTitle("");
-    setEditMode(false);
-    setEditableNote(null);
-  };
 
-  const editHandler = (id) => {
-    const toBeEditedNote = data.find((note) => note.id === id);
-    setEditMode(true);
-    setEditableNote(toBeEditedNote);
-    setNoteTitle(toBeEditedNote.title);
+    const createMutation = useMutation(createNote, {
+      onSuccess: () => {
+        client.invalidateQueries(["notes"]);
+      },
+    });
+    createMutation.mutate(newNote);
   };
-
   return (
     <div className="App">
-      <form onSubmit={(e) => (editMode ? updateHandler(e) : createHandler(e))}>
-        <input
-          type="text"
-          value={noteTitle}
-          onChange={(e) => setNoteTitle(e.target.value)}
-        />
-        <button type="submit">
-          {editMode ? "Update Note" : "Create note"}
-        </button>
-      </form>
-      <ul>
-        {isLoading && <li>Loading...</li>}
-        {isError && <li>Error: {error.message}</li>}
-        {data &&
-          data.map((note) => (
-            <li key={note.id}>
-              <span>{note.title}</span>{" "}
-              <button onClick={() => removeNoteMutation(note.id)}>
-                Delete
+      <center>
+        <h2>Note Taking App</h2>
+        <form>
+          <input
+            type="text"
+            value={noteTitle}
+            onChange={(e) => setNoteTitle(e.target.value)}
+          />
+          <button onClick={CreateHandler}>Add Note</button>
+        </form>
+        <ul>
+          {notes?.map((item) => (
+            <li key={item.id}>
+              <span>{item.title}</span>
+              <button>edit</button>
+              <button onClick={() => removeMutation.mutate(item.id)}>
+                delete
               </button>
-              <button onClick={() => editHandler(note.id)}>Edit</button>
             </li>
           ))}
-      </ul>
+        </ul>
+        {fetchStatus === "fetching" && <div>Loading........</div>}
+        {isError && <h2>{error?.message}</h2>}{" "}
+      </center>
     </div>
   );
-};
+}
 
 export default App;
