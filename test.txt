@@ -1,0 +1,9 @@
+john.doe@example.com
+peter.pan@gmai1.com
+alice.wonderland@yahoo.com
+david.smith@outlook.com
+sarah.connor@terminator.n
+harry.potter@hogwarts.edu
+luke.skywalker@jediorg
+
+বাংলা কেমন আছ?

@@ -1,0 +1,6 @@
+john.doe@example.com
+peter.pan@gmai1.com
+alice.wonderland@yahoo.com
+david.smith@outlook.com
+sarah.connor@terminator.n is invalidharry.potter@hogwarts.edu
+luke.skywalker@jediorg is invalid
